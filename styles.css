@@ -1,6 +1,16 @@
+html {
+    padding: 0%;
+}
+
 div {
     width: 100%;
     display: inline-block;
+    padding: 0px 8px;
+    box-sizing: border-box;
+}
+
+p {
+    font-size: 28px;
 }
 
 ul {
@@ -54,33 +64,40 @@ a:visited {
     color: black;
 }
 
-li a:hover {
+a:hover {
     background-color: #182B49;
     color: white;
 }
 
+img {
+    max-width: 100%;
+}
+
 #athletics {
+    scroll-margin-top: 134.67px;
     background-color: rgb(245, 240, 230);
 }
 
 #colleges {
+    scroll-margin-top: 134.67px;
     background: url(images/bg-orbs-1.jpg) no-repeat center fixed;
     background-size: cover;
     color: white;
 }
 
 #fourbox {
+    scroll-margin-top: 134.67px;
     background-color: rgb(245, 240, 230);
     padding: 0px 25px;
     box-sizing: border-box;
 }
 
+/*
 .row {
     display: grid;
-    grid-template-columns: auto auto auto auto;
+    grid-template-columns: repeat(4, 1fr);
     column-gap: 25px;
-    
-}
+}   
 
 .one {
     grid-column: 1;
@@ -109,4 +126,49 @@ li a:hover {
     color: white;
     background-color: #182B49;
 }
+*/
 
+.container {
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: 1fr;
+    grid-column-gap: 25px;
+    display: grid;
+    padding: 1rem 0;
+}
+
+.box {
+    color: white;
+    background-color: #182B49;
+    margin: 0 0 1em 0;
+    box-sizing: border-box;
+    flex: 1;
+    max-height: 500px;
+    overflow: scroll;
+}
+
+
+@media screen and (max-width: 800px) {
+    a {
+        display: none;
+    }
+    
+    #logo {
+        max-width: 75%
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+
+    p {
+        font-size: 20px;
+    }
+
+    .container {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: 1fr;
+        grid-column-gap: 25px;
+        display: grid;
+        padding: 1rem 0;
+    }
+}
