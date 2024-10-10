@@ -5,7 +5,6 @@ import { ThemeContext, themes } from "./themeContext";
 export function ClickCounter() {
     const [count, setCount] = useState(0);
 
-<<<<<<< HEAD
     // const handleClick = () => {
     //     setCount(count + 1);
     // };
@@ -14,22 +13,6 @@ export function ClickCounter() {
         document.title = `You clicked ${count} times`;
     }, [count]);
 
-=======
-    //testing
-    // const [countsList, setCountsList] = useState<number[]>([]);
-
-    const handleClick = () => {
-        setCount(count + 1);
-
-        //testing
-        // setCountsList(prevList => [...prevList, count + 1]);
-    };
-
-    useEffect(() => {
-        document.title = `You clicked ${count} times`;
-    }, [count]);
-
->>>>>>> ecf5cc2d67675fa514fe6ca8463a6eee3d0fef53
     const theme = useContext(ThemeContext);
     return (
         <div
@@ -62,11 +45,7 @@ function ToggleTheme() {
     return (
         <ThemeContext.Provider value={currentTheme}>
             <button onClick={toggleTheme}> Toggle Theme </button>
-<<<<<<< HEAD
             <ClickCounter/>
-=======
-            <ClickCounter />
->>>>>>> ecf5cc2d67675fa514fe6ca8463a6eee3d0fef53
         </ThemeContext.Provider>
     );
 }
