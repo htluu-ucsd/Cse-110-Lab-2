@@ -1,8 +1,14 @@
 import React, { useState, useEffect, useContext } from 'react';
 
+<<<<<<< HEAD
 // import {FavoriteButton} from "./favoriteButton";
 
 import { ListContext, ToggleContext, MyListContext } from './listContext';
+=======
+import {FavoriteButton} from "./favoriteButton";
+
+import { ListContext, ListContext2, toggler } from './listContext';
+>>>>>>> ecf5cc2d67675fa514fe6ca8463a6eee3d0fef53
 // import { ToggleProvider, ListContext2 } from './listContext';
 
 
@@ -17,9 +23,12 @@ export function FavoritesList() {
 
     const test = true;
 
+<<<<<<< HEAD
     //test
     const [data, setData] = useContext(MyListContext);
 
+=======
+>>>>>>> ecf5cc2d67675fa514fe6ca8463a6eee3d0fef53
     //need to modify to only show note when favorited
     return (
         <div>
@@ -31,7 +40,10 @@ export function FavoritesList() {
     );
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ecf5cc2d67675fa514fe6ca8463a6eee3d0fef53
 //context to share button info toggle on/off
 // function ToggleList() {
 //     const [currentFavorite, setFavorite] = useState(toggler.off);
