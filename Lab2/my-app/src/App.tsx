@@ -3,9 +3,28 @@ import './App.css';
 import { Label, Note } from "./types"; // Import the Label type from the appropriate module
 import { dummyNotesList } from "./constants"; // Import the dummyNotesList from the appropriate module
 
-import { ClickCounter } from "./hooksExercise";
+import ToggleTheme, { ClickCounter } from "./hooksExercise";
+import { FavoriteButton } from "./favoriteButton"
+import { FavoritesList } from './favoritesList';
+
+import { createContext, useContext, useState } from 'react';
+import { ListContext } from './listContext';
+
+
+//context to share prop that determines button state
+const useToggle = () => {
+  const [isToggled, setIsToggled] = useState(false);
+  
+  const toggle = () => {
+    setIsToggled(prev => !prev);
+  };
+
+  return { isToggled, toggle };
+};
+//context to share prop that determines button state
 
 function App() {
+
   return (
 
     <div className='app-container'>
@@ -22,20 +41,21 @@ function App() {
             key={note.id}
             className="note-item">
             <div className="notes-header">
+              {/* HEART SHAPE BUTTON */}
+              <FavoriteButton/>
               <button>x</button>
             </div>
             <h2> {note.title} </h2>
             <p> {note.content} </p>
             <p> {note.label} </p>
-
-            {/* <button onClick={() => ClickCounter()}>TEST</button> */}
+            <ToggleTheme/>
           </div>
         ))}
-        <ClickCounter />
       </div>
+      <FavoritesList/>
+      {/* <ListContext/> */}
     </div>
   );
 }
-
 
 export default App;
