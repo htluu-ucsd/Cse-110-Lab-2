@@ -81,6 +81,7 @@ function App() {
             {/* <div>{data ? "a" : "b"}</div> */}
           </div>
         ))}
+        <ClickCounter />
       </div>
       {/* <ToggleTheme/> */}
       {/* <ToggleContext>
@@ -98,5 +99,6 @@ function App() {
     </div>
   );
 }
+
 
 export default App;
