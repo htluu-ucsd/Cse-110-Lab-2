@@ -14,20 +14,6 @@ import { createContext, useContext, useEffect, useState } from 'react';
 // import { ThemeContext, themes } from "./themeContext";
 import { BackgroundContextL, BackgroundContextD, themes } from './backgroundContext';
 
-
-
-//context to share prop that determines button state
-// const useToggle = () => {
-//   const [isToggled, setIsToggled] = useState(false);
-
-//   const toggle = () => {
-//     setIsToggled(prev => !prev);
-//   };
-
-//   return { isToggled, toggle };
-// };
-//context to share prop that determines button state
-
 export function ToggleAppTheme() {
   const [currentTheme, setCurrentTheme] = useState(themes.light);
 
@@ -52,6 +38,7 @@ export function ToggleAppTheme() {
 
 function App() {
 
+  //FOR CREATE
   const [notes, setNotes] = useState(dummyNotesList);
   const initialNote = {
     id: -1,
@@ -70,6 +57,10 @@ function App() {
     setCreateNote(initialNote);
   };
 
+  // FOR DELETE
+  const [selectedNote, setSelectedNote] = useState<Note>(initialNote);
+
+
   //holds favorites
   const [favoriteList, setFavoriteList] = useState([false, false, false, false, false, false]);
 
@@ -87,9 +78,6 @@ function App() {
 
   return (
     <div className='app-container' style={{ background: theme.background, color: theme.color }}>
-      {/* <ToggleTheme/> */}
-      {/* <button onClick={document.body}>CHANGE THEME</button> */}
-
       <form className="note-form" onSubmit={createNoteHandler}>
         <div>
           <input
@@ -140,9 +128,9 @@ function App() {
               {/* TESTING */}
               {/* <button onClick={() => updateToggle(note.id - 1, !favoriteList[note.id - 1])}>x test</button> */}
             </div>
-            <h2 style={{ color: theme.color }}> {note.title} </h2>
-            <p style={{ color: theme.color }}> {note.content} </p>
-            <p style={{ color: theme.color }}> {note.label} </p>
+            <h2 contentEditable="true" style={{ color: theme.color }}> {note.title} </h2>
+            <p contentEditable="true" style={{ color: theme.color }}> {note.content} </p>
+            <p contentEditable="true" style={{ color: theme.color }}> {note.label} </p>
           </div>
         ))}
       </div>
