@@ -9,7 +9,11 @@ import { ListContext, ToggleContext, MyListContext } from './listContext';
 import { FavoriteButton } from "./favoriteButton"
 import { FavoritesList } from './favoritesList';
 
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
+
+// import { ThemeContext, themes } from "./themeContext";
+import { BackgroundContextL, BackgroundContextD, themes } from './backgroundContext';
+
 
 
 //context to share prop that determines button state
@@ -23,6 +27,27 @@ import { createContext, useContext, useState } from 'react';
 //   return { isToggled, toggle };
 // };
 //context to share prop that determines button state
+
+export function ToggleAppTheme() {
+  const [currentTheme, setCurrentTheme] = useState(themes.light);
+
+  const toggleTheme = () => {
+      setCurrentTheme(currentTheme === themes.light ? themes.dark : themes.light);
+  };
+
+  useEffect (() => {
+    return () => {
+      document.body.style.backgroundColor = document.body.style.backgroundColor === 'lightgrey' ? 'black' : 'lightgrey';
+    };
+  });
+
+  return (
+      <BackgroundContextL.Provider value={currentTheme}>
+          <button onClick={toggleTheme}> Toggle Theme Page </button>
+          <App/>
+      </BackgroundContextL.Provider>
+  );
+}
 
 function App() {
 
@@ -40,13 +65,14 @@ function App() {
     })
   }
 
-  // setFavoriteList(
-  //   [...favoriteList, false]
-  // );
+  //for backgrounds
+  const theme = useContext(BackgroundContextL);
 
   return (
+    <div className='app-container' style={{ background: theme.background, color: theme.color }}>
+      {/* <ToggleTheme/> */}
+      {/* <button onClick={document.body}>CHANGE THEME</button> */}
 
-    <div className='app-container'>
       <form className="note-form">
         <div><input placeholder="Note Title"></input></div>
 
@@ -56,7 +82,7 @@ function App() {
       </form>
       <div className="notes-grid">
         {dummyNotesList.map((note) => (
-          <div
+          <div style={{ background: theme.note}}
             key={note.id}
             className="note-item">
             <div className="notes-header">
@@ -67,21 +93,21 @@ function App() {
                 <FavoriteButton favoriteToggled={updateToggle} value={note.id - 1}/>
               </ToggleContext>
 
-              <button>x</button>
+              <button style={{ color: theme.color }}>x</button>
 
               {/* TESTING */}
               {/* <button onClick={() => updateToggle(note.id - 1, !favoriteList[note.id - 1])}>x test</button> */}
             </div>
-            <h2> {note.title} </h2>
-            <p> {note.content} </p>
-            <p> {note.label} </p>
-            <ToggleTheme />
+            <h2 style={{ color: theme.color }}> {note.title} </h2>
+            <p style={{ color: theme.color }}> {note.content} </p>
+            <p style={{ color: theme.color }}> {note.label} </p>
+            {/* <ToggleTheme /> */}
 
             {/* testing purposes */}
             {/* <div>{data ? "a" : "b"}</div> */}
           </div>
         ))}
-        <ClickCounter />
+        {/* <ClickCounter /> */}
       </div>
       {/* <ToggleTheme/> */}
       {/* <ToggleContext>
