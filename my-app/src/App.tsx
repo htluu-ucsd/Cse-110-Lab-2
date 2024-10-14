@@ -32,26 +32,43 @@ export function ToggleAppTheme() {
   const [currentTheme, setCurrentTheme] = useState(themes.light);
 
   const toggleTheme = () => {
-      setCurrentTheme(currentTheme === themes.light ? themes.dark : themes.light);
+    setCurrentTheme(currentTheme === themes.light ? themes.dark : themes.light);
   };
 
-  useEffect (() => {
+  useEffect(() => {
     return () => {
       document.body.style.backgroundColor = document.body.style.backgroundColor === 'lightgrey' ? 'black' : 'lightgrey';
     };
   });
 
   return (
-      <BackgroundContextL.Provider value={currentTheme}>
-          <button onClick={toggleTheme}> Toggle Theme Page </button>
-          <App/>
-      </BackgroundContextL.Provider>
+    <BackgroundContextL.Provider value={currentTheme}>
+      <button onClick={toggleTheme}> Toggle Theme Page </button>
+      <App />
+    </BackgroundContextL.Provider>
   );
 }
 
+
 function App() {
 
-  // const [data, setData] = useContext(MyListContext);
+  const [notes, setNotes] = useState(dummyNotesList);
+  const initialNote = {
+    id: -1,
+    title: "",
+    content: "",
+    label: Label.other,
+  };
+  const [createNote, setCreateNote] = useState(initialNote);
+
+  const createNoteHandler = (event: React.FormEvent) => {
+    event.preventDefault();
+    console.log("title: ", createNote.title);
+    console.log("content: ", createNote.content);
+    createNote.id = notes.length + 1;
+    setNotes([createNote, ...notes]);
+    setCreateNote(initialNote);
+  };
 
   //holds favorites
   const [favoriteList, setFavoriteList] = useState([false, false, false, false, false, false]);
@@ -73,24 +90,49 @@ function App() {
       {/* <ToggleTheme/> */}
       {/* <button onClick={document.body}>CHANGE THEME</button> */}
 
-      <form className="note-form">
-        <div><input placeholder="Note Title"></input></div>
+      <form className="note-form" onSubmit={createNoteHandler}>
+        <div>
+          <input
+            placeholder="Note Title"
+            onChange={(event) =>
+              setCreateNote({ ...createNote, title: event.target.value })}
+            required>
+          </input>
+        </div>
 
-        <div><textarea></textarea></div>
+        <div>
+          <textarea
+            onChange={(event) =>
+              setCreateNote({ ...createNote, content: event.target.value })}
+            required>
+          </textarea>
+        </div>
+
+        <div>
+          <select
+            onChange={(event) =>
+              setCreateNote({ ...createNote, label: event.target.value as Label })}
+            required>
+            <option value={Label.personal}>Personal</option>
+            <option value={Label.study}>Study</option>
+            <option value={Label.work}>Work</option>
+            <option value={Label.other}>Other</option>
+          </select>
+        </div>
 
         <div><button type="submit">Create Note</button></div>
       </form>
+
       <div className="notes-grid">
-        {dummyNotesList.map((note) => (
-          <div style={{ background: theme.note}}
+        {notes.map((note) => (
+          <div style={{ background: theme.note }}
             key={note.id}
             className="note-item">
             <div className="notes-header">
               {/* HEART SHAPE BUTTON */}
-              
               <ToggleContext>
                 {/* {favoriteList[note.id] ? 'false' : 'true'} */}
-                <FavoriteButton favoriteToggled={updateToggle} value={note.id - 1}/>
+                <FavoriteButton favoriteToggled={updateToggle} value={note.id - 1} />
               </ToggleContext>
 
               <button style={{ color: theme.color }}>x</button>
@@ -101,20 +143,10 @@ function App() {
             <h2 style={{ color: theme.color }}> {note.title} </h2>
             <p style={{ color: theme.color }}> {note.content} </p>
             <p style={{ color: theme.color }}> {note.label} </p>
-            {/* <ToggleTheme /> */}
-
-            {/* testing purposes */}
-            {/* <div>{data ? "a" : "b"}</div> */}
           </div>
         ))}
-        {/* <ClickCounter /> */}
       </div>
-      {/* <ToggleTheme/> */}
-      {/* <ToggleContext>
-        <FavoritesList />
-      </ToggleContext> */}
-
-      {/* TESTTING */}
+      
       <div>
         <h3>List of favorites:</h3>
         {favoriteList.map((boolean, i) => (
