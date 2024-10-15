@@ -37,13 +37,6 @@ export function ToggleAppTheme() {
 
 function App() {
 
-  //holds favorites
-  const [favoriteList, setFavoriteList] = useState([false, false, false, false, false, false]);
-
-  const addtoFavor = () => {
-    setFavoriteList(prevList => [...prevList, false]);
-  }
-
   //FOR CREATE
   const [notes, setNotes] = useState(dummyNotesList);
   const initialNote = {
@@ -56,21 +49,21 @@ function App() {
   const [createNote, setCreateNote] = useState(initialNote);
 
   const createNoteHandler = (event: React.FormEvent) => {
-    addtoFavor();
     event.preventDefault();
     console.log("title: ", createNote.title);
     console.log("content: ", createNote.content);
     createNote.id = notes.length + 1;
     setNotes([createNote, ...notes]);
     setCreateNote(initialNote);
-    
-    // console.log(favoriteList.length);
-    // addtoFavor();
-    // console.log(favoriteList.length);
   };
 
-  // FOR DELETE
+  //FOR UPDATE NOTES
   const [selectedNote, setSelectedNote] = useState<Note>(initialNote);
+
+  //FOR DELETE
+  const deleteNoteHandler = (note: Note) => {
+    setNotes(prevNote => prevNote.filter(createNote => createNote !== note));
+  };
 
   //updates the favorite
   const updateToggle = (id: number) => {
@@ -131,7 +124,7 @@ function App() {
                 <FavoriteButton favoriteToggled={updateToggle} value={note.id} />
               </ToggleContext>
 
-              <button style={{ color: theme.color }}>x</button>
+              <button style={{ color: theme.color }} onClick={() => {deleteNoteHandler(note)}}>x</button>
 
             </div>
             <h2 contentEditable="true" style={{ color: theme.color }}> {note.title} </h2>
@@ -144,12 +137,10 @@ function App() {
       {/* List of Notes */}
       <div>
         <h3>List of favorites:</h3>
-        {notes.map((number, i) => (
-          <p>{notes[i].favorite ? notes[i].title : ''}</p>
+        {notes.map((note) => (
+          <p>{note.favorite ? note.title : ''}</p>
         ))}
       </div>
-
-      {/* <ListContext/> */}
     </div>
   );
 }

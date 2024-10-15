@@ -14,11 +14,11 @@ export const themes = {
     },
 };
 
-const initialState = {
-    dark: false,
-    theme: themes.light,
-    toggle: () => {}
-}
+// const initialState = {
+//     dark: false,
+//     theme: themes.light,
+//     toggle: () => {}
+// }
 
 export const BackgroundContextL = React.createContext(themes.light);
 export const BackgroundContextD = React.createContext(themes.dark);
