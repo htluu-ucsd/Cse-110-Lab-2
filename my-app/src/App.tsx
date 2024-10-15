@@ -7,13 +7,12 @@ import ToggleTheme, { ClickCounter } from "./hooksExercise";
 
 import { ListContext, ToggleContext, MyListContext } from './listContext';
 import { FavoriteButton } from "./favoriteButton"
-import { FavoritesList } from './favoritesList';
 
 import { createContext, useContext, useEffect, useState } from 'react';
 
-// import { ThemeContext, themes } from "./themeContext";
 import { BackgroundContextL, BackgroundContextD, themes } from './backgroundContext';
 
+//For updating the theme
 export function ToggleAppTheme() {
   const [currentTheme, setCurrentTheme] = useState(themes.light);
 
@@ -38,6 +37,13 @@ export function ToggleAppTheme() {
 
 function App() {
 
+  //holds favorites
+  const [favoriteList, setFavoriteList] = useState([false, false, false, false, false, false]);
+
+  const addtoFavor = () => {
+    setFavoriteList(prevList => [...prevList, false]);
+  }
+
   //FOR CREATE
   const [notes, setNotes] = useState(dummyNotesList);
   const initialNote = {
@@ -45,32 +51,34 @@ function App() {
     title: "",
     content: "",
     label: Label.other,
+    favorite: false,
   };
   const [createNote, setCreateNote] = useState(initialNote);
 
   const createNoteHandler = (event: React.FormEvent) => {
+    addtoFavor();
     event.preventDefault();
     console.log("title: ", createNote.title);
     console.log("content: ", createNote.content);
     createNote.id = notes.length + 1;
     setNotes([createNote, ...notes]);
     setCreateNote(initialNote);
+    
+    // console.log(favoriteList.length);
+    // addtoFavor();
+    // console.log(favoriteList.length);
   };
 
   // FOR DELETE
   const [selectedNote, setSelectedNote] = useState<Note>(initialNote);
 
-
-  //holds favorites
-  const [favoriteList, setFavoriteList] = useState([false, false, false, false, false, false]);
-
-  //updates the elements
-  const updateToggle = (i: number, value: boolean) => {
-    setFavoriteList(prev => {
-      const newFavoriteList = [...prev];
-      newFavoriteList[i] = value;
-      return newFavoriteList;
-    })
+  //updates the favorite
+  const updateToggle = (id: number) => {
+    setNotes((prevItems) =>
+      prevItems.map((note) =>
+        note.id === id ? { ...note, favorite: !note.favorite } : note
+      )
+    );
   }
 
   //for backgrounds
@@ -117,16 +125,14 @@ function App() {
             key={note.id}
             className="note-item">
             <div className="notes-header">
+
               {/* HEART SHAPE BUTTON */}
               <ToggleContext>
-                {/* {favoriteList[note.id] ? 'false' : 'true'} */}
-                <FavoriteButton favoriteToggled={updateToggle} value={note.id - 1} />
+                <FavoriteButton favoriteToggled={updateToggle} value={note.id} />
               </ToggleContext>
 
               <button style={{ color: theme.color }}>x</button>
 
-              {/* TESTING */}
-              {/* <button onClick={() => updateToggle(note.id - 1, !favoriteList[note.id - 1])}>x test</button> */}
             </div>
             <h2 contentEditable="true" style={{ color: theme.color }}> {note.title} </h2>
             <p contentEditable="true" style={{ color: theme.color }}> {note.content} </p>
@@ -135,12 +141,14 @@ function App() {
         ))}
       </div>
       
+      {/* List of Notes */}
       <div>
         <h3>List of favorites:</h3>
-        {favoriteList.map((boolean, i) => (
-          <p>{boolean ? dummyNotesList[i].title : ''}</p>
+        {notes.map((number, i) => (
+          <p>{notes[i].favorite ? notes[i].title : ''}</p>
         ))}
       </div>
+
       {/* <ListContext/> */}
     </div>
   );
