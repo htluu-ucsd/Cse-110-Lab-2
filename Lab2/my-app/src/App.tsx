@@ -7,95 +7,140 @@ import ToggleTheme, { ClickCounter } from "./hooksExercise";
 
 import { ListContext, ToggleContext, MyListContext } from './listContext';
 import { FavoriteButton } from "./favoriteButton"
-import { FavoritesList } from './favoritesList';
 
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 
+import { BackgroundContextL, BackgroundContextD, themes } from './backgroundContext';
 
-//context to share prop that determines button state
-// const useToggle = () => {
-//   const [isToggled, setIsToggled] = useState(false);
+//For updating the theme
+export function ToggleAppTheme() {
+  const [currentTheme, setCurrentTheme] = useState(themes.light);
 
-//   const toggle = () => {
-//     setIsToggled(prev => !prev);
-//   };
+  const toggleTheme = () => {
+    setCurrentTheme(currentTheme === themes.light ? themes.dark : themes.light);
+  };
 
-//   return { isToggled, toggle };
-// };
-//context to share prop that determines button state
+  useEffect(() => {
+    return () => {
+      document.body.style.backgroundColor = document.body.style.backgroundColor === 'lightgrey' ? 'black' : 'lightgrey';
+    };
+  });
+
+  return (
+    <BackgroundContextL.Provider value={currentTheme}>
+      <button onClick={toggleTheme}> Toggle Theme Page </button>
+      <App />
+    </BackgroundContextL.Provider>
+  );
+}
+
 
 function App() {
 
-  // const [data, setData] = useContext(MyListContext);
+  //FOR CREATE
+  const [notes, setNotes] = useState(dummyNotesList);
+  const initialNote = {
+    id: -1,
+    title: "",
+    content: "",
+    label: Label.other,
+    favorite: false,
+  };
+  const [createNote, setCreateNote] = useState(initialNote);
 
-  //holds favorites
-  const [favoriteList, setFavoriteList] = useState([false, false, false, false, false, false]);
+  const createNoteHandler = (event: React.FormEvent) => {
+    event.preventDefault();
+    console.log("title: ", createNote.title);
+    console.log("content: ", createNote.content);
+    createNote.id = notes.length + 1;
+    setNotes([createNote, ...notes]);
+    setCreateNote(initialNote);
+  };
 
-  //updates the elements
-  const updateToggle = (i: number, value: boolean) => {
-    setFavoriteList(prev => {
-      const newFavoriteList = [...prev];
-      newFavoriteList[i] = value;
-      return newFavoriteList;
-    })
+  //FOR UPDATE NOTES
+  const [selectedNote, setSelectedNote] = useState<Note>(initialNote);
+
+  //FOR DELETE
+  const deleteNoteHandler = (note: Note) => {
+    setNotes(prevNote => prevNote.filter(createNote => createNote !== note));
+  };
+
+  //updates the favorite
+  const updateToggle = (id: number) => {
+    setNotes((prevItems) =>
+      prevItems.map((note) =>
+        note.id === id ? { ...note, favorite: !note.favorite } : note
+      )
+    );
   }
 
-  // setFavoriteList(
-  //   [...favoriteList, false]
-  // );
+  //for backgrounds
+  const theme = useContext(BackgroundContextL);
 
   return (
+    <div className='app-container' style={{ background: theme.background, color: theme.color }}>
+      <form className="note-form" onSubmit={createNoteHandler}>
+        <div>
+          <input
+            placeholder="Note Title"
+            onChange={(event) =>
+              setCreateNote({ ...createNote, title: event.target.value })}
+            required>
+          </input>
+        </div>
 
-    <div className='app-container'>
-      <form className="note-form">
-        <div><input placeholder="Note Title"></input></div>
+        <div>
+          <textarea
+            onChange={(event) =>
+              setCreateNote({ ...createNote, content: event.target.value })}
+            required>
+          </textarea>
+        </div>
 
-        <div><textarea></textarea></div>
+        <div>
+          <select
+            onChange={(event) =>
+              setCreateNote({ ...createNote, label: event.target.value as Label })}
+            required>
+            <option value={Label.personal}>Personal</option>
+            <option value={Label.study}>Study</option>
+            <option value={Label.work}>Work</option>
+            <option value={Label.other}>Other</option>
+          </select>
+        </div>
 
         <div><button type="submit">Create Note</button></div>
       </form>
+
       <div className="notes-grid">
-        {dummyNotesList.map((note) => (
-          <div
+        {notes.map((note) => (
+          <div style={{ background: theme.note }}
             key={note.id}
             className="note-item">
             <div className="notes-header">
+
               {/* HEART SHAPE BUTTON */}
-              
               <ToggleContext>
-                {/* {favoriteList[note.id] ? 'false' : 'true'} */}
-                <FavoriteButton favoriteToggled={updateToggle} value={note.id - 1}/>
+                <FavoriteButton favoriteToggled={updateToggle} value={note.id} />
               </ToggleContext>
 
-              <button>x</button>
+              <button style={{ color: theme.color }} onClick={() => {deleteNoteHandler(note)}}>x</button>
 
-              {/* TESTING */}
-              {/* <button onClick={() => updateToggle(note.id - 1, !favoriteList[note.id - 1])}>x test</button> */}
             </div>
-            <h2> {note.title} </h2>
-            <p> {note.content} </p>
-            <p> {note.label} </p>
-            <ToggleTheme />
-
-            {/* testing purposes */}
-            {/* <div>{data ? "a" : "b"}</div> */}
+            <h2 contentEditable="true" style={{ color: theme.color }}> {note.title} </h2>
+            <p contentEditable="true" style={{ color: theme.color }}> {note.content} </p>
+            <p contentEditable="true" style={{ color: theme.color }}> {note.label} </p>
           </div>
         ))}
-        <ClickCounter />
       </div>
-      {/* <ToggleTheme/> */}
-      {/* <ToggleContext>
-        <FavoritesList />
-      </ToggleContext> */}
-
-      {/* TESTTING */}
+      
+      {/* List of Notes */}
       <div>
         <h3>List of favorites:</h3>
-        {favoriteList.map((boolean, i) => (
-          <p>{boolean ? dummyNotesList[i].title : ''}</p>
+        {notes.map((note) => (
+          <p>{note.favorite ? note.title : ''}</p>
         ))}
       </div>
-      {/* <ListContext/> */}
     </div>
   );
 }
